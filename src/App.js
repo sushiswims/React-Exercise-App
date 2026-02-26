@@ -1,23 +1,65 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import "./App.css";
+import RepetitionExercise from "./components/RepetitionExercise";
+import DurationExercise from "./components/DurationExercise";
+
+// list of exercises in the menu
+const exercises = [
+  { id: 1, name: "Push Ups", type: "repetition" },
+  { id: 2, name: "Running", type: "duration" },
+  { id: 3, name: "Plank", type: "duration" },
+];
 
 function App() {
+  const [selectedExercise, setSelectedExercise] = useState(null);
+
+  const handleBackToMain = () => {
+    setSelectedExercise(null);
+  };
+
+  let exerciseScreen = null;
+
+  if (selectedExercise) {
+    if (selectedExercise.type === "repetition") {
+      exerciseScreen = (
+        <RepetitionExercise
+          name={selectedExercise.name}
+          onBack={handleBackToMain}
+        />
+      );
+    } else if (selectedExercise.type === "duration") {
+      exerciseScreen = (
+        <DurationExercise
+          name={selectedExercise.name}
+          onBack={handleBackToMain}
+        />
+      );
+    }
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Exercise Tracker</h1>
+
+      {/* MAIN MENU */}
+      {!selectedExercise && (
+        <div>
+          <h2>Select an Exercise</h2>
+          {exercises.map((exercise) => (
+            <button
+              key={exercise.id}
+              onClick={() => setSelectedExercise(exercise)}
+            >
+              {exercise.name} ({exercise.type})
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* EXERCISE SCREEN */}
+      {selectedExercise && (
+        <div style={{ marginTop: "20px" }}>{exerciseScreen}</div>
+      )}
     </div>
   );
 }
